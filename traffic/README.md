@@ -42,8 +42,9 @@ Next, check that rules actually exist:
 
 Now. deploy the `sleep` Pod and try to access `weather-backend` from there:
 - `kubectl apply -f sleep.yaml`
--`kubectl exec -it sleep-asdfasfa -c sleep /bin/bash`
--`curl http://weather-backend:5000/`
+- `SLEEP=$(kubectl get pod -l app=sleep -o jsonpath="{.items..metadata.name}")`
+- `kubectl exec -it $SLEEP -c sleep /bin/bash`
+- `curl http://weather-backend:5000/`
 
 You'll notice that via `curl` you're still seeing the same 50/50 split behavior.
 
@@ -281,7 +282,7 @@ Once that's applied, wait a few moments and check the rules syncing status to co
 Then you can also check the `istio-proxy` routes in the `weather-frontend` Pod:
 - `istioctl proxy-config route $FRONTEND --name 5000 -o json`
 
-And now you see that the `istio-proxy` has route entries for bot `weather-backend` subsets.
+And now you see that the `istio-proxy` has route entries for both `weather-backend` subsets.
 
 ## Deploy and Debug Hipstershop
 
