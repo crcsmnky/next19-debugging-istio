@@ -256,7 +256,7 @@ spec:
     app: weather-backend
 ```
 
-And there is the culprit: `spec.ports[0].name` is set to `backend`. For Istio's routing rules to apply, Service port names must follow a specific naming convention.
+And there is the culprit: `spec.ports[0].name` is set to `backend`. For Istio's routing rules to apply, [Service port names must follow a specific naming convention](https://istio.io/docs/setup/kubernetes/prepare/requirements/).
 
 So now, update the Service definition:
 ```bash
