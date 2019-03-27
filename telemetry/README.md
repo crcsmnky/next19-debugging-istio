@@ -1,6 +1,6 @@
 # Debugging Istio Telemetry
 
-This repo contains a demo/tutorial for debugging Istio telemetry (specifically Mixer), part of [Next 2019: HYB303 Debugging Istio](). 
+This repo contains a demo/tutorial for debugging Istio telemetry (specifically Prometheus and Mixer), part of [Next 2019: HYB303 Debugging Istio](https://cloud.withgoogle.com/next/sf/sessions?session=HYB303). 
 
 ## Cluster Setup
 
