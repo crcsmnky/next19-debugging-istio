@@ -20,12 +20,13 @@ Then download the appropriate Istio 1.0.6 for your platform (`linux`, `mac`, or 
 Now install Istio 1.0.6:
 - `kubectl apply -f install/kubernetes/istio-demo.yaml`
 
-Wait a few minutes for the Pods and Services to spin up, then active automatic sidecar injection:
+Wait a few minutes for the Pods and Services to spin up, then activate automatic sidecar injection:
 - `kubectl label ns default istio-injection=enabled`
 
 ## Deploy the Weather App
 
-*Note:* We'll use the sample [weatherinfo](https://github.com/crcsmnky/weatherinfo) app as our example. If you don't have the weatherinfo images in your project, you'll need to clone that repo, build, and push those images before proceeding.
+*Note:* We'll use the sample [weatherinfo](https://github.com/crcsmnky/weatherinfo) app as our example. If you don't have the weatherinfo images in your project, you'll need to clone that repo, build, and push those images before proceeding. Before deploying the sample you'll need an API key from [OpenWeatherMap](http://openweathermap.org/api). Once you have that, use it to create a Secret:
+- `kubectl create secret generic openweathermap --from-literal=apikey=[OPENWEATHERMAP-API-KEY]`
 
 First, apply `weather-rules.yaml` to setup the appropriate `VirtualService`, `ServiceEntry`, and `Gateway` configurations:
 - `kubectl apply -f weather-rules.yaml`

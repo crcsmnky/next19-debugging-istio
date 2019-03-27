@@ -18,7 +18,7 @@ Next, grab the cluster credentials and enable auto-injection for `istio-proxy`:
 
 ## Deploy the Weather App
 
-Before deploying the sample app, you'll need an API key from [OpenWeatherMap](http://openweathermap.org/api). Once you have that, use it to create a Secret:
+Before deploying the sample [weatherinfo](https://github.com/crcsmnky/weatherinfo) app, you'll need an API key from [OpenWeatherMap](http://openweathermap.org/api). Once you have that, use it to create a Secret:
 - `kubectl create secret generic openweathermap --from-literal=apikey=[OPENWEATHERMAP-API-KEY]`
 
 Next, create the Istio Gateway, VirtualService, DestinationRule, and ServiceEntry objects needed for the sample app to function properly:
@@ -329,11 +329,3 @@ EOF
 
 - `istioctl proxy-status`
 - `istioctl proxy-config routes $FRONTEND --name 3550 -o json`
-
-## Notes
-- GKE 1.12.5-gke.5
-- Istio 1.0.3
-- https://istio.io/help/ops/misc/#verifying-connectivity-to-istio-pilot 
-- https://istio.io/help/ops/component-debugging/ 
-- https://istio.io/help/ops/traffic-management/proxy-cmd/ 
-- https://istio.io/help/ops/traffic-management/deploy-guidelines/#route-rules-have-no-effect-on-my-application 
