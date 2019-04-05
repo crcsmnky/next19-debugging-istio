@@ -40,21 +40,32 @@ Start by checking Pods and Services and confirm everything is running:
 Next, check that rules actually exist:
 - `kubectl get virtualservice`
 
-Now. deploy the `sleep` Pod and try to access `weather-backend` from there:
-- `kubectl apply -f sleep.yaml`
-- `SLEEP=$(kubectl get pod -l app=sleep -o jsonpath="{.items..metadata.name}")`
-- `kubectl exec -it $SLEEP -c sleep /bin/bash`
-- `curl http://weather-backend:5000/`
+Now deploy the [`respy`](https://github.com/askmeegs/respy) Pod and use it to check the distribution percentage across versions of `weather-backend`:
+- `kubectl apply -f respy.yaml`
+- `RESPY=$(kubectl get pod -l app=respy -o jsonpath="{.items[0].metadata.name}")`
+- `kubectl exec -it $RESPY -c respy -- ./respy --u http://weather-backend:5000/version`
+```
+☎️   1000 requests to http://weather-backend:5000/version...
++--------------------------------+--------------------+
+|            RESPONSE            | % OF 1000 REQUESTS |
++--------------------------------+--------------------+
+| weather-backend: single        | 50%                |
+| weather-backend: multiple      | 50%                |
++--------------------------------+--------------------+
+```
 
-You'll notice that via `curl` you're still seeing the same 50/50 split behavior.
+As you can see, after 1000 requests, traffic to `weather-backend` is still using the 50/50 split.
 
 Now check the `istio-proxy` log from `weather-frontend`:
 - `FRONTEND=$(kubectl get po -l app=weather-frontend -o jsonpath="{.items..metadata.name}")`
-- `kubectl logs weather-frontend-sdfasdfa -c istio-proxy -f`
+- `kubectl logs $FRONTEND -c istio-proxy -f | grep 'weather-backend'`
 
 In the log, you'll see entries like the following:
 ```
-[2019-03-20T20:10:51.322Z] - 162 365 48 "10.56.2.27:5000" outbound|5000||weather-backend.default.svc.cluster.local 10.56.2.26:36050 10.59.240.90:5000 10.56.2.26:52622
+[2019-04-05 20:03:16.038][18][info][upstream] external/envoy/source/common/upstream/cluster_manager_impl.cc:494] add/update cluster outbound|5000||weather-backend.default.svc.cluster.local during init
+[2019-04-05 20:03:16.039][18][info][upstream] external/envoy/source/common/upstream/cluster_manager_impl.cc:494] add/update cluster outbound|5000|single|weather-backend.default.svc.cluster.local during init
+[2019-04-05 20:03:16.040][18][info][upstream] external/envoy/source/common/upstream/cluster_manager_impl.cc:494] add/update cluster outbound|5000|multiple|weather-backend.default.svc.cluster.local during init
+[2019-04-05T20:04:13.272Z] - 162 1009 270 "10.52.3.3:5000" outbound|5000||weather-backend.default.svc.cluster.local 10.52.3.2:41068 10.55.255.116:5000 10.52.3.2:44988
 ```
 
 Note that `weather-frontend` is able to connect to `weather-backend`, but the traffic is not directed to any particular version. So we've now confirmed that routing rules aren't being used and `weather-frontend` is using Kubernetes round-robin behavior to route traffic.
@@ -236,6 +247,8 @@ Now we know that `weather-backend` is running on port `5000` so let's dig into t
     }
 ]
 ```
+
+*Note*: the output of `istioctl proxy-config routes` can be lengthy and difficult to parse. Consider using [`jq`](https://stedolan.github.io/jq/) to simplify visualizing the output. For example: `istioctl proxy-config routes $FRONTEND --name 5000 -o json | jq '.[].virtualHosts[]|.name,.domains'` will show each route's name and associated domains.
 
 The only route on port `5000` that `istio-proxy` knows about is back to `weather-frontend`. So Istio doesn't have any specific routes for `weather-backend`.
 
