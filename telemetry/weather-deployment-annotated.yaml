@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: weather-frontend
-        image: gcr.io/next19-istio-debug/weather-frontend:1.0
+        image: gcr.io/next19-istio-debug/weather-frontend:1.1
         imagePullPolicy: Always
         env:
         - name: BACKEND_HOSTPORT
@@ -75,7 +75,7 @@ spec:
     spec:
       containers:
       - name: weather-backend
-        image: gcr.io/next19-istio-debug/weather-backend-single:1.0
+        image: gcr.io/next19-istio-debug/weather-backend-single:1.1
         imagePullPolicy: Always
         env:
         - name: OWM_API_KEY
@@ -110,7 +110,7 @@ spec:
     spec:
       containers:
       - name: weather-backend
-        image: gcr.io/next19-istio-debug/weather-backend-multiple:1.0
+        image: gcr.io/next19-istio-debug/weather-backend-multiple:1.1
         imagePullPolicy: Always
         env:
         - name: OWM_API_KEY
