@@ -4,7 +4,7 @@ This repo contains a demo/tutorial for debugging Istio telemetry (specifically P
 
 ## Cluster Setup
 
-First, create a cluster that we'll use to install [Istio 1.0.6](https://github.com/istio/istio/releases/tag/1.0.6):
+First, create a cluster that we'll use to install [Istio 1.0.7](https://github.com/istio/istio/releases/tag/1.0.7):
 ```
 gcloud container clusters create debugging-telemetry \
     --cluster-version=latest --machine-type=n1-standard-2 \
@@ -17,7 +17,7 @@ Next, grab the cluster credentials and create a `cluster-admin-binding`:
 
 Then download the appropriate Istio 1.0.6 for your platform (`linux`, `mac`, or `win`) from the [Istio 1.0.6 release](https://github.com/istio/istio/releases/tag/1.0.6).
 
-Now install Istio 1.0.6:
+Now install Istio 1.0.7:
 - `kubectl apply -f install/kubernetes/istio-demo.yaml`
 
 Wait a few minutes for the Pods and Services to spin up, then activate automatic sidecar injection:
@@ -141,8 +141,8 @@ tcpbytesent       2d
 
 ### Updating Mixer configuration
 
-If any of these configurations are incorrect, you will need to supply an updated Mixer configuration: 
-- `wget https://github.com/istio/istio/archive/1.0.6.tar.gz && tar zxf 1.0.6.tar.gz && cd istio-1.0.6` 
+If any of these configurations are incorrect, you may need to supply an updated Mixer configuration: 
+- `wget https://github.com/istio/istio/archive/1.0.7.tar.gz && tar zxf 1.0.7.tar.gz && cd istio-1.0.7` 
 - `for FLAG in true false; do helm template --set mixer.enabled=$FLAG --namespace istio-system install/kubernetes/helm/istio > mixer-$FLAG.yaml; done`
 - `diff --line-format=%L mixer-true.yaml mixer-false.yaml > mixer-config.yaml`
 
